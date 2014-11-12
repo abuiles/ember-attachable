@@ -13,22 +13,6 @@ moduleForModel('user', 'User model with attachement', {
     var content = '<a id="a"><b id="b">hey!</b></a>';
     fileBlob = new Blob([content], { type: "text/xml"});
 
-    server = new Pretender(function(){
-      this.post('/users', function(request){
-        return [ 200,
-          {
-            "Content-Type": "application/json"
-          },
-          JSON.stringify({
-            user: {
-              id: 1,
-              fileUrl: 'path/to/upload_file'
-            }
-          })
-        ];
-      });
-    });
-
     // stub upload progress
     FakeXMLHttpRequest.prototype.upload = {};
   },
@@ -42,7 +26,26 @@ moduleForModel('user', 'User model with attachement', {
 });
 
 test('saves model with attachment', function(){
-  expect(1);
+  expect(4);
+
+  server = new Pretender(function(){
+    this.post('/users', function(request){
+      // due to Pretender can't make
+      // any other asserts on requestBody
+      equal(request.requestBody.constructor.name, 'FormData');
+      return [ 200,
+        {
+          "Content-Type": "application/json"
+        },
+        JSON.stringify({
+          user: {
+            id: 1,
+            fileUrl: 'path/to/upload_file'
+          }
+        })
+      ];
+    });
+  });
 
   var userModel = this.subject();
   userModel.set('file', fileBlob);
@@ -53,6 +56,8 @@ test('saves model with attachment', function(){
   });
 
   result.then(function(createdUser){
+    ok(createdUser.get('isLoaded'), 'record is in isLoaded state');
+    equal(createdUser.get('id'), 1, 'id is set');
     equal(createdUser.get('fileUrl'), 'path/to/upload_file', 'fileUrl attr should be set from response payload');
   });
 });
