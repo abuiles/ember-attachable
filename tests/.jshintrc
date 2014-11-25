@@ -1,5 +1,7 @@
 {
   "predef": [
+    "FakeXMLHttpRequest",
+    "Blob",
     "document",
     "window",
     "location",
@@ -44,7 +46,8 @@
     "andThen",
     "currentURL",
     "currentPath",
-    "currentRouteName"
+    "currentRouteName",
+    "moduleForModel"
   ],
   "node": false,
   "browser": false,
