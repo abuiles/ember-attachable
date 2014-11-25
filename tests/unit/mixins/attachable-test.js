@@ -10,8 +10,10 @@ moduleForModel('user', 'User model with attachement', {
   needs: 'adapter:application'.w(),
 
   setup: function(){
-    var content = '<a id="a"><b id="b">hey!</b></a>';
-    fileBlob = new Blob([content], { type: "text/xml"});
+    // PhantomJS doesn't support Blob
+    // var content = '<a id="a"><b id="b">hey!</b></a>';
+    // fileBlob = new Blob([content], { type: "text/xml"});
+    fileBlob = 'BLOB';
 
     // stub upload progress
     FakeXMLHttpRequest.prototype.upload = {};
@@ -30,9 +32,14 @@ test('saves model with attachment', function(){
 
   server = new Pretender(function(){
     this.post('/users', function(request){
-      // due to Pretender can't make
-      // any other asserts on requestBody
-      equal(request.requestBody.constructor.name, 'FormData');
+
+      var constructorName = request.requestBody.constructor.name;
+      if (constructorName){
+        equal(constructorName, 'FormData', 'Should be instance of FormData');
+      }else{
+        ok(true, "Can't assert constructor of FormData instance in PhantomJs");
+      }
+
       return [ 200,
         {
           "Content-Type": "application/json"
@@ -59,5 +66,57 @@ test('saves model with attachment', function(){
     ok(createdUser.get('isLoaded'), 'record is in isLoaded state');
     equal(createdUser.get('id'), 1, 'id is set');
     equal(createdUser.get('fileUrl'), 'path/to/upload_file', 'fileUrl attr should be set from response payload');
+  });
+});
+
+test('updates model with attachment', function(){
+  expect(4);
+
+  server = new Pretender(function(){
+    this.put('/users/1', function(request){
+
+      var constructorName = request.requestBody.constructor.name;
+      if (constructorName){
+        equal(constructorName, 'FormData', 'Should be instance of FormData');
+      }else{
+        ok(true, "Can't assert constructor of FormData instance in PhantomJs");
+      }
+
+      return [ 200,
+      {
+        "Content-Type": "application/json"
+      },
+      JSON.stringify({
+        user: {
+          id: 1,
+          fileUrl: 'path/to/upload_file1'
+        }
+      })
+      ];
+    });
+  });
+
+  var store = this.subject().get('store');
+
+  Ember.run(function(){
+    store.push('user', {
+      id: 1,
+      firstName: 'John'
+    });
+  });
+
+  var userModel = this.subject().get('store').getById('user', 1);
+  userModel.set('file', fileBlob);
+
+  var result;
+
+  Ember.run(function(){
+    result = userModel.saveWithAttachment();
+  });
+
+  result.then(function(createdUser){
+    ok(createdUser.get('isLoaded'), 'record is in isLoaded state');
+    equal(createdUser.get('id'), 1, 'id is set');
+    equal(createdUser.get('fileUrl'), 'path/to/upload_file1', 'fileUrl attr should be updated from response payload');
   });
 });
