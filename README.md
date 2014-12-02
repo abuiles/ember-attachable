@@ -44,7 +44,7 @@ userModel.set('photo', file) // 'photo' is the name of attachment configured in 
 userModel.saveWithAttachment()
 ```
 Attachment itself can be an instance of [`Blob`] (https://developer.mozilla.org/en-US/docs/Web/API/Blob)
-or of any other classes which are supported by `FormData` (see [`Working priciple`](https://github.com/sol1dus/ember-attachable/tree/improve-docs#working-principle) below)
+or of any other classes which are supported by `FormData` (see [`Working principle`](https://github.com/sol1dus/ember-attachable/tree/improve-docs#working-principle) below)
 
 ## Working principle
 
