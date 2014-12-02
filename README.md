@@ -33,5 +33,19 @@ export default DS.Model.extend(Attachable, {
 });
 ```
 
-`Ember-attachable` internally uses [`FormData API`](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
-to perform _POST_ request with `Content-Type: multipart/form-data` for transferring attachment.
+To save your model with attachment, mixin adds a new method `saveWithAttachement()`.
+This method _adheres_ `Ember-Data`'s `save()` semantics, and saves your model
+along with attachment:
+
+```javascript
+userModel.set('photo', file) // 'photo' is the name of attachment configured in userModel's class
+userModel.saveWithAttachment()
+```
+
+## Working principle
+
+`ember-attachable` internally uses [`FormData API`](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
+to perform _POST_ request with
+`Content-Type: multipart/form-data` for saving your `Ember Data` models along with transferring attachment.
+If you ember app is backed by `Rails` application, you can use this library with [`paperclip gem`](https://github.com/thoughtbot/paperclip)
+(or any other of your taste) to effectively manage _*save* request_ on backend.
