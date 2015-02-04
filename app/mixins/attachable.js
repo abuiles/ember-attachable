@@ -15,21 +15,19 @@ export default Ember.Mixin.create({
     formData = new FormData();
     attachmentKey = this.get('attachment');
     data = Ember.copy(this.serialize());
-    data[attachmentKey] = this.get(attachmentKey);
+    Ember.makeArray(this.get(attachmentKey)).forEach(function(key) {
+      data[key] = this.get(key);
+    }, this);
     formData = new FormData();
     root = this._rootKey();
     Ember.keys(data).forEach(function(key) {
-      if (key === attachmentKey) {
-        return formData.append("" + root + "[" + key + "]", data[key]);
-      } else {
-        if (!Ember.isEmpty(data[key])) {
-          if (Ember.isArray(data[key])) {
-            return data[key].forEach(function(val) {
-              return formData.append("" + root + "[" + key + "][]", val);
-            });
-          } else {
-            return formData.append("" + root + "[" + key + "]", data[key]);
-          }
+      if (!Ember.isEmpty(data[key])) {
+        if (Ember.isArray(data[key])) {
+          return data[key].forEach(function(val) {
+            return formData.append("" + root + "[" + key + "][]", val);
+          });
+        } else {
+          return formData.append("" + root + "[" + key + "]", data[key]);
         }
       }
     });
