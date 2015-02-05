@@ -15,7 +15,7 @@ export default Ember.Mixin.create({
     formData = new FormData();
     attachmentKey = this.get('attachment');
     data = Ember.copy(this.serialize());
-    Ember.makeArray(this.get(attachmentKey)).forEach(function(key) {
+    Ember.makeArray(attachmentKey).forEach(function(key) {
       data[key] = this.get(key);
     }, this);
     formData = new FormData();
