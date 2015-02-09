@@ -34,8 +34,17 @@ export default DS.Model.extend(Attachable, {
   attachment: 'file'; // Name of your attachable attribute
 });
 ```
+There is a support of having *two or more* attachments simultaneously
+on the same model. For this, just set _array_ of strings as a value of
+`attachment` property:
 
-To save your model with attachment, mixin adds a new method `saveWithAttachement()`.
+```javascript
+export default DS.Model.extend(Attachable, {
+  attachment: 'file photo'.w(); // Name of your attachable attributes
+});
+```
+
+To save your model with attachment(s), mixin adds a new method `saveWithAttachement()`.
 This method _adheres_ `Ember-Data`'s `save()` semantics, and saves your model
 along with attachment:
 
