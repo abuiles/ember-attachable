@@ -40,7 +40,7 @@ on the same model. For this, just set _array_ of strings as a value of
 
 ```javascript
 export default DS.Model.extend(Attachable, {
-  attachment: 'file photo'.w(); // Name of your attachable attributes
+  attachment: ['file', 'photo']; // Name of your attachable attributes
 });
 ```
 
