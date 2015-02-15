@@ -121,6 +121,38 @@ test('updates model with attachment', function(){
   });
 });
 
+test('save model with attachment but fails', function(){
+  expect(1);
+
+  server = new Pretender(function(){
+    this.post('/users', function(request){
+
+      return [ 422,
+        {
+          "Content-Type": "application/json"
+        },
+        JSON.stringify({
+          errors: {
+            file: ['File is invalid']
+          }
+        })
+      ];
+    });
+  });
+
+  var userModel = this.subject();
+  userModel.set('file', fileBlob);
+
+  var result;
+  Ember.run(function(){
+    result = userModel.saveWithAttachment();
+  });
+
+  result.then(null, function(){
+    deepEqual(userModel.get('errors.messages'), ['File is invalid'], 'errors property should be set from response payload');
+  });
+});
+
 moduleForModel('book', 'Book model with attachements', {
 
   needs: 'adapter:application'.w(),
