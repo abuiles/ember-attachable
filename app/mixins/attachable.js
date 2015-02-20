@@ -83,8 +83,8 @@ export default Ember.Mixin.create({
       store.didSaveRecord(record, payload);
       return record;
     }), (function(reason) {
-      if (reason instanceof DS.InvalidError) {
-        store.recordWasInvalid(record, reason.errors);
+      if (reason.jqXHR && reason.jqXHR.status === 422) {
+        store.recordWasInvalid(record, reason.jqXHR.responseJSON.errors);
       } else {
         store.recordWasError(record, reason);
       }
