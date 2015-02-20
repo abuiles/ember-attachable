@@ -212,3 +212,57 @@ test('saves model with multiple attachments', function(){
     deepEqual(createdBook.get('figureUrls'), ['path/to/figure_1', 'path/to/figure_2'], 'figureUrls attr should be set from response payload');
   });
 });
+
+moduleForModel('post', 'model with attachment and ActiveModelAdapter', {
+
+  needs: 'adapter:post'.w(),
+
+  setup: function(){
+    // PhantomJS doesn't support Blob
+    // var content = '<a id="a"><b id="b">hey!</b></a>';
+    // fileBlob = new Blob([content], { type: "text/xml"});
+    fileBlob = 'BLOB';
+
+    // stub upload progress
+    FakeXMLHttpRequest.prototype.upload = {};
+  },
+
+  teardown: function(){
+    if (server){
+      server.shutdown();
+    }
+  }
+
+});
+
+test('save model with attachment but fails', function(){
+  expect(1);
+
+  server = new Pretender(function(){
+    this.post('/posts', function(request){
+
+      return [ 422,
+               {
+                 "Content-Type": "application/json"
+               },
+               JSON.stringify({
+                 errors: {
+                   photo: ['Photo is invalid']
+                 }
+               })
+             ];
+    });
+  });
+
+  var post = this.subject();
+  post.set('photo', fileBlob);
+
+  var result;
+  Ember.run(function(){
+    result = post.saveWithAttachment();
+  });
+
+  result.then(null, function(){
+    deepEqual(post.get('errors.messages'), [{'photo': ['Photo is invalid']}], 'errors property should be set from response payload');
+  });
+});
