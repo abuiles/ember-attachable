@@ -83,10 +83,13 @@ export default Ember.Mixin.create({
       store.didSaveRecord(record, payload);
       return record;
     }), (function(reason) {
-      if (reason.jqXHR && reason.jqXHR.status === 422) {
-        store.recordWasInvalid(record, reason.jqXHR.responseJSON.errors);
+      var error = adapter.ajaxError(reason.jqXHR);
+      if (error instanceof DS.InvalidError) {
+        store.recordWasInvalid(record, error.errors);
+      } else if (error.status === 422){
+        store.recordWasInvalid(record, error.responseJSON.errors);
       } else {
-        store.recordWasError(record, reason);
+        store.recordWasError(record);
       }
       throw reason;
     }), "Uploading file with attachment");
