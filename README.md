@@ -31,16 +31,16 @@ import DS from 'ember-data';
 import Attachable from '../mixins/attachable';
 
 export default DS.Model.extend(Attachable, {
-  attachment: 'file'; // Name of your attachable attribute
+  attachmentAs: 'file'; // Name of your attachable attribute
 });
 ```
 There is a support of having *two or more* attachments simultaneously
 on the same model. For this, just set _array_ of strings as a value of
-`attachment` property:
+`attachmentAs` property:
 
 ```javascript
 export default DS.Model.extend(Attachable, {
-  attachment: ['file', 'photo']; // Name of your attachable attributes
+  attachmentAs: ['file', 'photo']; // Name of your attachable attributes
 });
 ```
 

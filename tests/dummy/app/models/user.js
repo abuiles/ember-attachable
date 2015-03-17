@@ -3,7 +3,7 @@ import Attachable from '../mixins/attachable';
 
 export default DS.Model.extend(Attachable,{
 
-  attachment: 'file',
+  attachmentAs: 'file',
 
   firstName: DS.attr('string'),
   lastName: DS.attr('string'),
