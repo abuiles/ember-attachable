@@ -3,7 +3,7 @@ import DS from 'ember-data';
 import { request } from 'ic-ajax';
 
 export default Ember.Mixin.create({
-  attachment: null,
+  attachmentAs: null,
   saveWithAttachment: function() {
     return this.createWithAttachment();
   },
@@ -12,7 +12,7 @@ export default Ember.Mixin.create({
     _this = this;
     adapter = this.store.adapterFor(this.constructor);
     serializer = this.store.serializerFor(this.constructor.typeKey);
-    attachmentKey = this.get('attachment');
+    attachmentKey = this.get('attachmentAs');
     data = Ember.copy(this.serialize());
     Ember.makeArray(attachmentKey).forEach(function(key) {
       data[key] = this.get(key);
