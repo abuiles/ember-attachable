@@ -1,19 +1,8 @@
 import  Ember from 'ember';
 import { test, moduleForModel } from 'ember-qunit';
-import AttachableMixin from '../../../mixins/attachable';
 
 var fileBlob,
     server;
-
-module('Attachable');
-
-// Replace this with your real tests.
-test('it works', function() {
-  var AttachableObject = Ember.Object.extend(AttachableMixin);
-  var subject = AttachableObject.create();
-  ok(subject);
-});
-
 
 moduleForModel('user', 'User model with attachement', {
 
