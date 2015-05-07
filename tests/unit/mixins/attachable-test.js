@@ -1,13 +1,23 @@
 import  Ember from 'ember';
 import { test, moduleForModel } from 'ember-qunit';
-import Pretender from 'pretender';
+import AttachableMixin from '../../../mixins/attachable';
 
 var fileBlob,
     server;
 
+module('Attachable');
+
+// Replace this with your real tests.
+test('it works', function() {
+  var AttachableObject = Ember.Object.extend(AttachableMixin);
+  var subject = AttachableObject.create();
+  ok(subject);
+});
+
+
 moduleForModel('user', 'User model with attachement', {
 
-  needs: 'adapter:application'.w(),
+  needs: 'adapter:application',
 
   setup: function(){
     // PhantomJS doesn't support Blob
@@ -155,7 +165,7 @@ test('save model with attachment but fails', function(){
 
 moduleForModel('book', 'Book model with attachements', {
 
-  needs: 'adapter:application'.w(),
+  needs: 'adapter:application',
 
   setup: function(){
     // PhantomJS doesn't support Blob
@@ -215,7 +225,7 @@ test('saves model with multiple attachments', function(){
 
 moduleForModel('post', 'model with attachment and ActiveModelAdapter', {
 
-  needs: 'adapter:post'.w(),
+  needs: 'adapter:post',
 
   setup: function(){
     // PhantomJS doesn't support Blob
