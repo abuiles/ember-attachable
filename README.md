@@ -55,6 +55,28 @@ userModel.saveWithAttachment()
 Attachment itself can be an instance of [`Blob`] (https://developer.mozilla.org/en-US/docs/Web/API/Blob)
 or of any other classes which are supported by `FormData` (see [`Working principle`](#working-principle) below)
 
+## Component
+
+> This is an example of a simple input file component.
+
+```javascript
+//component.js
+import Ember from 'ember';
+
+export default Ember.TextField.extend({
+  type: 'file',
+  file: null,
+  change: function (e) {
+    this.set('file',  new Blob([e.target.files[0]],{ type: e.target.files[0].type}));
+  }
+});
+```
+
+```handlebars
+{{! template.hbs }}
+{{yield}}
+```
+
 ## Working principle
 
 `ember-attachable` internally uses [`FormData API`](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
