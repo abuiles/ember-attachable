@@ -41,6 +41,7 @@ export default Ember.Mixin.create({
       type: this._requestType(),
       data: formData,
       dataType: 'json',
+      headers: adapter.get('headers'),
       processData: false,
       contentType: false,
       xhr: function() {
