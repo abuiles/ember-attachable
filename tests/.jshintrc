@@ -47,7 +47,8 @@
     "currentURL",
     "currentPath",
     "currentRouteName",
-    "moduleForModel"
+    "moduleForModel",
+    "Pretender"
   ],
   "node": false,
   "browser": false,

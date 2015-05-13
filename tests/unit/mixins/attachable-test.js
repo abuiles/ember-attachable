@@ -1,13 +1,12 @@
 import  Ember from 'ember';
 import { test, moduleForModel } from 'ember-qunit';
-import Pretender from 'pretender';
 
 var fileBlob,
     server;
 
 moduleForModel('user', 'User model with attachement', {
 
-  needs: 'adapter:application'.w(),
+  needs: 'adapter:application',
 
   setup: function(){
     // PhantomJS doesn't support Blob
@@ -155,7 +154,7 @@ test('save model with attachment but fails', function(){
 
 moduleForModel('book', 'Book model with attachements', {
 
-  needs: 'adapter:application'.w(),
+  needs: 'adapter:application',
 
   setup: function(){
     // PhantomJS doesn't support Blob
@@ -215,7 +214,7 @@ test('saves model with multiple attachments', function(){
 
 moduleForModel('post', 'model with attachment and ActiveModelAdapter', {
 
-  needs: 'adapter:post'.w(),
+  needs: 'adapter:post',
 
   setup: function(){
     // PhantomJS doesn't support Blob
@@ -264,5 +263,75 @@ test('save model with attachment but fails', function(){
 
   result.then(null, function(){
     deepEqual(post.get('errors.messages'), [{'photo': ['Photo is invalid']}], 'errors property should be set from response payload');
+  });
+});
+
+moduleForModel('magazine', 'Magazine model with attachement', {
+
+  needs: ['adapter:magazine','serializer:magazine'],
+
+  setup: function(){
+    // PhantomJS doesn't support Blob
+    // var content = '<a id="a"><b id="b">hey!</b></a>';
+    // fileBlob = new Blob([content], { type: "text/xml"});
+    fileBlob = 'BLOB';
+
+    // stub upload progress
+    FakeXMLHttpRequest.prototype.upload = {};
+  },
+
+  teardown: function(){
+    if (server){
+      server.shutdown();
+    }
+  }
+
+});
+
+test('saves model with attachment', function(){
+  expect(4);
+
+  server = new Pretender(function(){
+    this.post('/magazines', function(request){
+
+      var constructorName = request.requestBody.constructor.name;
+      if (constructorName){
+        equal(constructorName, 'FormData', 'Should be instance of FormData');
+      }else{
+        ok(true, "Can't assert constructor of FormData instance in PhantomJs");
+      }
+
+      return [ 200,
+        {
+          "Content-Type": "application/json"
+        },
+        JSON.stringify({
+          magazine: {
+            id: 1,
+            coverUrl: 'path/to/upload_file'
+          }
+        })
+      ];
+    });
+  });
+
+  var magazineModel = this.subject();
+  // magazineModel.set('cover', fileBlob);
+
+  var result;
+  Ember.run(function(){
+
+    magazineModel.set('embeddedDataA1', 'embedded data a1');
+    magazineModel.set('embeddedDataB1', 'embedded data b1');
+    magazineModel.set('embeddedDataB21', 'embedded data b21');
+
+
+    result = magazineModel.saveWithAttachment();
+  });
+
+  result.then(function(createdUser){
+    ok(createdUser.get('isLoaded'), 'record is in isLoaded state');
+    equal(createdUser.get('id'), 1, 'id is set');
+    equal(createdUser.get('coverUrl'), 'path/to/upload_file', 'coverUrl attr should be set from response payload');
   });
 });

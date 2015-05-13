@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import DS from 'ember-data';
 import { request } from 'ic-ajax';
 
 export default Ember.Mixin.create({
@@ -14,9 +13,13 @@ export default Ember.Mixin.create({
     serializer = this.store.serializerFor(this.constructor.typeKey);
     attachmentKey = this.get('attachmentAs');
     data = Ember.copy(this.serialize());
+
+    // For each key set on `attachmentName` we add that key to `data` array
+    // with its conrresponding BLOB file.
     Ember.makeArray(attachmentKey).forEach(function(key) {
       data[key] = this.get(key);
     }, this);
+
     formData = new FormData();
     root = this._rootKey();
     Ember.keys(data).forEach(function(key) {
@@ -25,6 +28,8 @@ export default Ember.Mixin.create({
           return data[key].forEach(function(val) {
             return formData.append("" + root + "[" + key + "][]", val);
           });
+        }else if(Object.prototype.toString.call(data[key]) === '[object Object]'){
+          return _this._recursiveObjectAppend(formData,"" + root + "[" + key + "]",data,key);
         } else {
           return formData.append("" + root + "[" + key + "]", data[key]);
         }
@@ -48,6 +53,15 @@ export default Ember.Mixin.create({
       }
     });
     return this._commitWithAttachment(promise, adapter, serializer);
+  },
+  _recursiveObjectAppend: function(formData, appendRoot, data, key) {
+    for (var qey in data[key]){
+      if(Object.prototype.toString.call(data[key][qey]) === '[object Object]'){
+        this._recursiveObjectAppend(formData,appendRoot + "[" + qey + "]", data[key], qey);
+      }else{
+        formData.append(appendRoot + "[" + qey + "]", data[key][qey]);
+      }
+    }
   },
   _rootKey: function() {
     return Ember.String.underscore(Ember.String.decamelize(this.constructor.typeKey));
