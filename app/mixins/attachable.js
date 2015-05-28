@@ -23,7 +23,7 @@ export default Ember.Mixin.create({
     formData = new FormData();
     root = this._rootKey();
     Ember.keys(data).forEach(function(key) {
-      if (!Ember.isEmpty(data[key])) {
+      if (!Ember.isNone(data[key])) {
         if (Ember.isArray(data[key])) {
           return data[key].forEach(function(val) {
             return formData.append("" + root + "[" + key + "][]", val);
