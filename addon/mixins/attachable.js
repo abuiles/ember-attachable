@@ -1,6 +1,11 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 import { request } from 'ic-ajax';
+import {
+  convertResourceObject,
+  normalizeResponseHelper,
+  _normalizeSerializerPayload
+} from 'ember-attachable/lib/serializer-response';
 
 export default Ember.Mixin.create({
   attachmentAs: null,
@@ -89,14 +94,31 @@ export default Ember.Mixin.create({
       operation = "updateRecord";
     }
     return promise.then((function(adapterPayload) {
-      var payload;
-      payload = void 0;
-      if (adapterPayload) {
-        payload = serializer.extract(store, type, adapterPayload, Ember.get(record, "id"), operation);
-      } else {
-        payload = adapterPayload;
+      if (record._oldEmberData) {
+        var payload;
+        payload = void 0;
+        if (adapterPayload) {
+          payload = serializer.extract(store, type, adapterPayload, Ember.get(record, "id"), operation);
+        } else {
+          payload = adapterPayload;
+        }
+        store.didSaveRecord(record, payload);
+      } else{
+        store._adapterRun(function() {
+          var payload, data;
+          var internalModel = record._internalModel;
+          if (adapterPayload) {
+            payload = normalizeResponseHelper(serializer, store, type, adapterPayload, Ember.get(record, "id"), operation);
+            if (payload.included) {
+              store.push({ data: payload.included });
+            }
+            data = convertResourceObject(payload.data);
+          }else{
+            data = adapterPayload;
+          }
+          store.didSaveRecord(internalModel, _normalizeSerializerPayload(internalModel.type, data));
+        });
       }
-      store.didSaveRecord(record, payload);
       return record;
     }), (function(reason) {
       var error = adapter.ajaxError(reason.jqXHR);
