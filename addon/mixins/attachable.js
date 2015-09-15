@@ -42,7 +42,7 @@ export default Ember.Mixin.create({
       }
     });
     url = adapter.buildURL(this.constructor.typeKey, this.get('id'));
-    this._oldEmberData ? this._internalModel.adapterWillCommit() : this.adapterWillCommit();
+    this._oldEmberData() ? this.adapterWillCommit() : this._internalModel.adapterWillCommit();
     promise = request(url, {
       type: this._requestType(),
       data: formData,
@@ -81,7 +81,8 @@ export default Ember.Mixin.create({
     }
   },
   _commitWithAttachment: function(promise, adapter, serializer) {
-    var operation, record, store, type;
+    var operation, record, store, type, oldEmberData;
+    oldEmberData = this._oldEmberData();
     store = this.store;
     record = this;
     type = record.constructor;
@@ -94,7 +95,7 @@ export default Ember.Mixin.create({
       operation = "updateRecord";
     }
     return promise.then((function(adapterPayload) {
-      if (record._oldEmberData) {
+      if (oldEmberData) {
         var payload;
         payload = void 0;
         if (adapterPayload) {
@@ -133,6 +134,6 @@ export default Ember.Mixin.create({
     }), "Uploading file with attachment");
   },
   _oldEmberData: function() {
-    return Ember.isNone(this.adapterWillCommit);
+    return !Ember.isNone(this.adapterWillCommit);
   }
 });
