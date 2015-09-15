@@ -37,7 +37,7 @@ export default Ember.Mixin.create({
       }
     });
     url = adapter.buildURL(this.constructor.typeKey, this.get('id'));
-    this.adapterWillCommit();
+    this._oldEmberData ? this._internalModel.adapterWillCommit() : this.adapterWillCommit();
     promise = request(url, {
       type: this._requestType(),
       data: formData,
@@ -109,5 +109,8 @@ export default Ember.Mixin.create({
       }
       throw reason;
     }), "Uploading file with attachment");
+  },
+  _oldEmberData: function() {
+    return Ember.isNone(this.adapterWillCommit);
   }
 });
