@@ -10,7 +10,7 @@ export default Ember.Mixin.create({
     var adapter, attachmentKey, data, formData, promise, root, serializer, url,
     _this = this;
     adapter = this.store.adapterFor(this.constructor);
-    serializer = this.store.serializerFor(this.constructor.typeKey);
+    serializer = this.store.serializerFor(this.constructor.modelName);
     attachmentKey = this.get('attachmentAs');
     data = Ember.copy(this.serialize());
 
@@ -35,7 +35,7 @@ export default Ember.Mixin.create({
         }
       }
     });
-    url = adapter.buildURL(this.constructor.typeKey, this.get('id'));
+    url = adapter.buildURL(this.constructor.modelName, this.get('id'));
     this.adapterWillCommit();
     promise = request(url, {
       type: this._requestType(),
@@ -65,7 +65,7 @@ export default Ember.Mixin.create({
     }
   },
   _rootKey: function() {
-    return Ember.String.underscore(Ember.String.decamelize(this.constructor.typeKey));
+    return Ember.String.underscore(Ember.String.decamelize(this.constructor.modelName));
   },
   _requestType: function() {
     if (this.get("isNew")) {
