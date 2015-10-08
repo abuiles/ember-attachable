@@ -3,7 +3,7 @@
 
 [`ember-cli`](https://github.com/stefanpenner/ember-cli) package, which adds attachments support to your Ember-Data models.
 
-## Installing
+## Installation
 
 In the root dir of your project run
 
@@ -14,7 +14,7 @@ In the root dir of your project run
 ```javascript
 "devDependencies": {
   ...
-  "ember-attachable": "latest"
+  "ember-attachable": "0.5.0"
 }
 ```
 You may want to be more precise with your version locking.

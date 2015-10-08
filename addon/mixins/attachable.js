@@ -42,7 +42,11 @@ export default Ember.Mixin.create({
       }
     });
     url = adapter.buildURL(this.constructor.typeKey, this.get('id'));
-    this._oldEmberData() ? this.adapterWillCommit() : this._internalModel.adapterWillCommit();
+    if(this._oldEmberData()){
+      this.adapterWillCommit();
+    }else{
+      this._internalModel.adapterWillCommit();
+    }
     promise = request(url, {
       type: this._requestType(),
       data: formData,
@@ -122,16 +126,48 @@ export default Ember.Mixin.create({
       }
       return record;
     }), (function(reason) {
-      var error = adapter.ajaxError(reason.jqXHR);
-      if (error instanceof DS.InvalidError) {
-        store.recordWasInvalid(record, error.errors);
-      } else if (error.status === 422){
-        store.recordWasInvalid(record, error.responseJSON.errors);
-      } else {
-        store.recordWasError(record);
+      var error;
+      if(adapter.ajaxError){
+        error = adapter.ajaxError(reason.jqXHR);
+        if (error instanceof DS.InvalidError) {
+          store.recordWasInvalid(record, error.errors);
+        } else if (error.status === 422){
+          store.recordWasInvalid(record, error.responseJSON.errors);
+        } else {
+          store.recordWasError(record);
+        }
+      }else{
+        error = adapter.handleResponse(reason.jqXHR.status, record._parseResponseHeaders(reason.jqXHR.getAllResponseHeaders()), adapter.parseErrorResponse(reason.jqXHR.responseText));
+        if (error instanceof DS.InvalidError) {
+          let stateToTransition = record.get('isNew') ? 'created.uncommitted' : 'updated.uncommitted';
+          record.transitionTo(stateToTransition);
+          let recordModel = record.adapterDidInvalidate ? record : record._internalModel;
+          store.recordWasInvalid(recordModel, DS.errorsArrayToHash(error.errors));
+        }
       }
       throw reason;
     }), "Uploading file with attachment");
+  },
+  _parseResponseHeaders: function (headerStr) {
+    var headers = {};
+    if (!headerStr) {
+      return headers;
+    }
+
+    var headerPairs = headerStr.split('\u000d\u000a');
+    for (var i = 0; i < headerPairs.length; i++) {
+      var headerPair = headerPairs[i];
+      // Can't use split() here because it does the wrong thing
+      // if the header value has the string ": " in it.
+      var index = headerPair.indexOf('\u003a\u0020');
+      if (index > 0) {
+        var key = headerPair.substring(0, index);
+        var val = headerPair.substring(index + 2);
+        headers[key] = val;
+      }
+    }
+
+    return headers;
   },
   _oldEmberData: function() {
     return !Ember.isNone(this.adapterWillCommit);
