@@ -1,4 +1,5 @@
 import  Ember from 'ember';
+import DS from 'ember-data';
 import { test, moduleForModel } from 'ember-qunit';
 
 var fileBlob,
@@ -211,7 +212,7 @@ test('saves model with multiple attachments', function(){
   });
 });
 
-moduleForModel('post', 'model with attachment and ActiveModelAdapter', {
+moduleForModel('post', 'Post model with attachment and ActiveModelAdapter', {
 
   needs: 'adapter:post',
 
@@ -259,9 +260,12 @@ test('save model with attachment but fails', function(){
   Ember.run(function(){
     result = post.saveWithAttachment();
   });
-
   result.then(null, function(){
-    deepEqual(post.get('errors.messages'), ['Photo is invalid'], 'errors property should be set from response payload');
+    if(DS.VERSION === '1.0.0-beta.16'){
+      deepEqual(post.get('errors.messages'), [{'photo': ['Photo is invalid']}], 'errors property should be set from response payload');
+    }else{
+      deepEqual(post.get('errors.messages'), ['Photo is invalid'], 'errors property should be set from response payload');
+    }
   });
 });
 
