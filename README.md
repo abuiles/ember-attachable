@@ -1,4 +1,5 @@
 # Ember-attachable
+[![Build Status](https://travis-ci.org/abuiles/ember-attachable.svg?branch=master)](https://travis-ci.org/abuiles/ember-attachable) [![npm version](https://badge.fury.io/js/ember-attachable.svg)](http://badge.fury.io/js/ember-attachable) [![Ember Observer Score](http://emberobserver.com/badges/ember-attachable.svg)](http://emberobserver.com/addons/ember-attachable)
 
 [`ember-cli`](https://github.com/stefanpenner/ember-cli) package, which adds attachments support to your Ember-Data models.
 
