@@ -244,8 +244,8 @@ test('save model with attachment but fails', function(){
                  "Content-Type": "application/json"
                },
                JSON.stringify({
-                 errors: {
-                   photo: ['Photo is invalid']
+                 "errors": {
+                   "photo": ['Photo is invalid']
                  }
                })
              ];
@@ -261,7 +261,7 @@ test('save model with attachment but fails', function(){
   });
 
   result.then(null, function(){
-    deepEqual(post.get('errors.messages'), [{'photo': ['Photo is invalid']}], 'errors property should be set from response payload');
+    deepEqual(post.get('errors.messages'), ['Photo is invalid'], 'errors property should be set from response payload');
   });
 });
 
