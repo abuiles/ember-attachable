@@ -53,10 +53,10 @@ test('saves model with attachment', function(){
     });
   });
 
-  var userModel = this.subject();
+  let userModel = this.subject();
   userModel.set('file', fileBlob);
 
-  var result;
+  let result;
   Ember.run(function(){
     result = userModel.saveWithAttachment();
   });
@@ -104,10 +104,10 @@ test('updates model with attachment', function(){
     });
   });
 
-  var userModel = this.subject().get('store').getById('user', 1);
+  let userModel = this.subject().get('store').getById('user', 1);
   userModel.set('file', fileBlob);
 
-  var result;
+  let result;
 
   Ember.run(function(){
     result = userModel.saveWithAttachment();
@@ -124,25 +124,24 @@ test('save model with attachment but fails', function(){
   expect(1);
 
   server = new Pretender(function(){
-    this.post('/users', function(request){
-
+    this.post('/users', function(){
       return [ 422,
         {
           "Content-Type": "application/json"
         },
         JSON.stringify({
-          errors: {
-            file: ['File is invalid']
+          "errors": {
+            "file": ['File is invalid']
           }
         })
       ];
     });
   });
 
-  var userModel = this.subject();
+  let userModel = this.subject();
   userModel.set('file', fileBlob);
 
-  var result;
+  let result;
   Ember.run(function(){
     result = userModel.saveWithAttachment();
   });
@@ -178,7 +177,7 @@ test('saves model with multiple attachments', function(){
   expect(4);
 
   server = new Pretender(function(){
-    this.post('/books', function(request){
+    this.post('/books', function(){
 
       return [ 200,
         {
@@ -195,11 +194,11 @@ test('saves model with multiple attachments', function(){
     });
   });
 
-  var bookModel = this.subject();
+  let bookModel = this.subject();
   bookModel.set('cover', fileBlob);
   bookModel.set('figures', [fileBlob, fileBlob]);
 
-  var result;
+  let result;
   Ember.run(function(){
     result = bookModel.saveWithAttachment();
   });
@@ -238,7 +237,7 @@ test('save model with attachment but fails', function(){
   expect(1);
 
   server = new Pretender(function(){
-    this.post('/posts', function(request){
+    this.post('/posts', function(){
 
       return [ 422,
                {
@@ -253,10 +252,10 @@ test('save model with attachment but fails', function(){
     });
   });
 
-  var post = this.subject();
+  let post = this.subject();
   post.set('photo', fileBlob);
 
-  var result;
+  let result;
   Ember.run(function(){
     result = post.saveWithAttachment();
   });
@@ -315,10 +314,10 @@ test('saves model with attachment', function(){
     });
   });
 
-  var magazineModel = this.subject();
+  let magazineModel = this.subject();
   // magazineModel.set('cover', fileBlob);
 
-  var result;
+  let result;
   Ember.run(function(){
 
     magazineModel.set('embeddedDataA1', 'embedded data a1');

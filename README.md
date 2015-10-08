@@ -3,7 +3,7 @@
 
 [`ember-cli`](https://github.com/stefanpenner/ember-cli) package, which adds attachments support to your Ember-Data models.
 
-## Installing
+## Installation
 
 In the root dir of your project run
 

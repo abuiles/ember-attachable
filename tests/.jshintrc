@@ -48,7 +48,8 @@
     "currentPath",
     "currentRouteName",
     "moduleForModel",
-    "Pretender"
+    "Pretender",
+    "currentRouteName"
   ],
   "node": false,
   "browser": false,
@@ -74,5 +75,6 @@
   "strict": false,
   "white": false,
   "eqnull": true,
-  "esnext": true
+  "esnext": true,
+  "unused": true
 }
