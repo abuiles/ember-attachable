@@ -42,7 +42,11 @@ export default Ember.Mixin.create({
       }
     });
     url = adapter.buildURL(this.constructor.typeKey, this.get('id'));
-    this._oldEmberData() ? this.adapterWillCommit() : this._internalModel.adapterWillCommit();
+    if(this._oldEmberData()){
+      this.adapterWillCommit();
+    }else{
+      this._internalModel.adapterWillCommit();
+    }
     promise = request(url, {
       type: this._requestType(),
       data: formData,

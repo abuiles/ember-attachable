@@ -1,4 +1,5 @@
 import Model from 'ember-data';
+import Ember from 'ember';
 
 const get = Ember.get;
 
