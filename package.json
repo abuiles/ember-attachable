@@ -1,6 +1,6 @@
 {
   "name": "ember-attachable",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "ember-cli package, package, which adds attachments support to your Ember-Data",
   "directories": {
     "doc": "doc",
