@@ -75,7 +75,7 @@ export default Ember.Mixin.create({
     }
   },
   _rootKey: function() {
-    return Ember.String.underscore(this._modelName);
+    return Ember.String.underscore(Ember.String.decamelize(this._modelName));
   },
   _requestType: function() {
     if (this.get("isNew")) {
