@@ -32,12 +32,12 @@ export default Ember.Mixin.create({
       if (!Ember.isNone(data[key])) {
         if (Ember.isArray(data[key])) {
           return data[key].forEach(function(val) {
-            return formData.append("" + root + "[" + key + "][]", val);
+            return formData.append("" + root + "[" + key + "][]", val, val.filename || 'blob');
           });
         }else if(Object.prototype.toString.call(data[key]) === '[object Object]'){
           return _this._recursiveObjectAppend(formData,"" + root + "[" + key + "]",data,key);
         } else {
-          return formData.append("" + root + "[" + key + "]", data[key]);
+          return formData.append("" + root + "[" + key + "]", data[key], data[key].filename || 'blob');
         }
       }
     });
