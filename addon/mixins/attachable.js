@@ -16,7 +16,7 @@ export default Ember.Mixin.create({
     var adapter, attachmentKey, data, formData, promise, root, serializer, url,
     _this = this;
     adapter = this.store.adapterFor(this.constructor);
-    serializer = this.store.serializerFor(this.constructor.typeKey);
+    serializer = this.store.serializerFor(this._modelName());
     attachmentKey = this.get('attachmentAs');
     data = Ember.copy(this.serialize());
 
@@ -41,7 +41,7 @@ export default Ember.Mixin.create({
         }
       }
     });
-    url = adapter.buildURL(this.constructor.typeKey, this.get('id'));
+    url = adapter.buildURL(this._modelName(), this.get('id'));
     if(this._oldEmberData()){
       this.adapterWillCommit();
     }else{
@@ -75,7 +75,7 @@ export default Ember.Mixin.create({
     }
   },
   _rootKey: function() {
-    return Ember.String.underscore(Ember.String.decamelize(this.constructor.typeKey));
+    return Ember.String.underscore(Ember.String.decamelize(this._modelName()));
   },
   _requestType: function() {
     if (this.get("isNew")) {
@@ -171,5 +171,13 @@ export default Ember.Mixin.create({
   },
   _oldEmberData: function() {
     return !Ember.isNone(this.adapterWillCommit);
+  },
+  // Provide backwards compatible modelName implementation
+  _modelName: function() {
+    if (Ember.isNone(this.constructor.typeKey)) {
+      return this.constructor.modelName;
+    } else {
+      return this.constructor.typeKey;
+    }
   }
 });
