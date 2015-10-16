@@ -14,7 +14,7 @@ In the root dir of your project run
 ```javascript
 "devDependencies": {
   ...
-  "ember-attachable": "1.0.0"
+  "ember-attachable": "1.1.0"
 }
 ```
 You may want to be more precise with your version locking.
