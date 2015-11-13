@@ -65,7 +65,7 @@ export default Ember.Mixin.create({
     return this._commitWithAttachment(promise, adapter, serializer);
   },
   _recursiveArrayAppend: function(formData, appendRoot, data, key) {
-    for (var qey = 0; qey < data[key]; qey++) {
+    for (var qey = 0; qey < data[key].length; qey++) {
       if (!Ember.isNone(data[key][qey])) {
         if(Object.prototype.toString.call(data[key][qey]) === '[object Object]'){
           this._recursiveObjectAppend(formData,appendRoot + "[" + qey + "]", data[key], qey);
