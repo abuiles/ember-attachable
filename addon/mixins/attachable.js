@@ -68,11 +68,11 @@ export default Ember.Mixin.create({
     for (var qey = 0; qey < data[key].length; qey++) {
       if (!Ember.isNone(data[key][qey])) {
         if(Object.prototype.toString.call(data[key][qey]) === '[object Object]'){
-          this._recursiveObjectAppend(formData,appendRoot + "[" + qey + "]", data[key], qey);
+          this._recursiveObjectAppend(formData,appendRoot + "[]", data[key], qey);
         } else if (Ember.isArray(data[key][qey])) {
-          this._recursiveArrayAppend(formData,appendRoot + "[" + qey + "]", data[key], qey);
+          this._recursiveArrayAppend(formData,appendRoot + "[]", data[key], qey);
         }else{
-          formData.append(appendRoot + "[" + qey + "]", data[key][qey]);
+          formData.append(appendRoot + "[]", data[key][qey]);
         }
       }
     }
