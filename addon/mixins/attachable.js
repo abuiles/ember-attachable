@@ -31,7 +31,7 @@ export default Ember.Mixin.create({
     Ember.keys(data).forEach(function(key) {
       if (!Ember.isNone(data[key])) {
         if (Ember.isArray(data[key])) {
-          return _this._recursiveObjectAppend(formData,"" + root + "[" + key + "][]",data,key);
+          return _this._recursiveArrayAppend(formData,"" + root + "[" + key + "]",data,key);
         }else if(Object.prototype.toString.call(data[key]) === '[object Object]'){
           return _this._recursiveObjectAppend(formData,"" + root + "[" + key + "]",data,key);
         } else {
@@ -64,13 +64,26 @@ export default Ember.Mixin.create({
     });
     return this._commitWithAttachment(promise, adapter, serializer);
   },
+  _recursiveArrayAppend: function(formData, appendRoot, data, key) {
+    for (var qey = 0; qey < data[key]; qey++) {
+      if (!Ember.isNone(data[key][qey])) {
+        if(Object.prototype.toString.call(data[key][qey]) === '[object Object]'){
+          this._recursiveObjectAppend(formData,appendRoot + "[" + qey + "]", data[key], qey);
+        } else if (Ember.isArray(data[key][qey])) {
+          this._recursiveArrayAppend(formData,appendRoot + "[" + qey + "]", data[key], qey);
+        }else{
+          formData.append(appendRoot + "[" + qey + "]", data[key][qey]);
+        }
+      }
+    }
+  },
   _recursiveObjectAppend: function(formData, appendRoot, data, key) {
     for (var qey in data[key]){
       if (!Ember.isNone(data[key][qey])) {
         if(Object.prototype.toString.call(data[key][qey]) === '[object Object]'){
           this._recursiveObjectAppend(formData,appendRoot + "[" + qey + "]", data[key], qey);
         } else if (Ember.isArray(data[key][qey])) {
-          this._recursiveObjectAppend(formData,appendRoot + "[" + qey + "][]", data[key], qey);
+          this._recursiveArrayAppend(formData,appendRoot + "[" + qey + "]", data[key], qey);
         }else{
           formData.append(appendRoot + "[" + qey + "]", data[key][qey]);
         }
