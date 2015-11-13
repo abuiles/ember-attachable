@@ -16,7 +16,11 @@ export default DS.ActiveModelSerializer.extend({
             embedded_data_b_2_1: magazine.attr('embeddedDataB21')
           }
         }
-      }
+      },
+      array_data: [
+        [{ embedded_key: magazine.attr('embeddedDataA1') }],
+        [{ embedded_key: magazine.attr('embeddedDataB1') }]
+      ]
     };
     return json;
   }

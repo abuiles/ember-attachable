@@ -31,9 +31,7 @@ export default Ember.Mixin.create({
     Ember.keys(data).forEach(function(key) {
       if (!Ember.isNone(data[key])) {
         if (Ember.isArray(data[key])) {
-          return data[key].forEach(function(val) {
-            return formData.append("" + root + "[" + key + "][]", val);
-          });
+          return _this._recursiveObjectAppend(formData,"" + root + "[" + key + "][]",data,key);
         }else if(Object.prototype.toString.call(data[key]) === '[object Object]'){
           return _this._recursiveObjectAppend(formData,"" + root + "[" + key + "]",data,key);
         } else {
@@ -41,6 +39,7 @@ export default Ember.Mixin.create({
         }
       }
     });
+
     url = adapter.buildURL(this._modelName(), this.get('id'));
     if(this._oldEmberData()){
       this.adapterWillCommit();
@@ -70,6 +69,8 @@ export default Ember.Mixin.create({
       if (!Ember.isNone(data[key][qey])) {
         if(Object.prototype.toString.call(data[key][qey]) === '[object Object]'){
           this._recursiveObjectAppend(formData,appendRoot + "[" + qey + "]", data[key], qey);
+        } else if (Ember.isArray(data[key][qey])) {
+          this._recursiveObjectAppend(formData,appendRoot + "[" + qey + "][]", data[key], qey);
         }else{
           formData.append(appendRoot + "[" + qey + "]", data[key][qey]);
         }
