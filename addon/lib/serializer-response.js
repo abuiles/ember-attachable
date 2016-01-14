@@ -179,10 +179,14 @@ function normalizeRelationshipData(key, value, relationshipMeta) {
   if (Ember.isNone(value)) {
     return null;
   }
-  //Temporary support for https://github.com/emberjs/data/issues/3271
-  if (value instanceof Model) {
-    value = { id: value.id, type: value.constructor.modelName };
-  }
+
+  try {
+    //Temporary support for https://github.com/emberjs/data/issues/3271
+    if (value instanceof Model) {
+      value = { id: value.id, type: value.constructor.modelName };
+    }
+  } catch(e){}
+
   if (Ember.typeOf(value) === 'object') {
     Ember.assert(`Ember Data expected a number or string to represent the record(s) in the '${key}' relationship instead it found an object. If this is a polymorphic relationship please specify a 'type' key. If this is an embedded relationship please include the 'DS.EmbeddedRecordsMixin' and specify the '${key}' property in your serializer's attrs object.`, value.type);
     if (value.id) {
