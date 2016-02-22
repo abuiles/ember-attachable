@@ -15,7 +15,7 @@ export default Ember.Mixin.create({
   createWithAttachment: function() {
     var adapter, attachmentKey, data, formData, promise, root, serializer, url,
     _this = this;
-    adapter = this.store.adapterFor(this.constructor);
+    adapter = this.store.adapterFor(this.constructor.modelName);
     serializer = this.store.serializerFor(this._modelName());
     attachmentKey = this.get('attachmentAs');
     data = Ember.copy(this.serialize());
