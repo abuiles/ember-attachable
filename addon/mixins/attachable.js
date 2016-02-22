@@ -9,11 +9,11 @@ import {
 
 export default Ember.Mixin.create({
   attachmentAs: null,
-  saveWithAttachment: function() {
+  saveWithAttachment() {
     return this.createWithAttachment();
   },
-  createWithAttachment: function() {
-    var adapter, attachmentKey, data, formData, promise, root, serializer, url,
+  createWithAttachment() {
+    let adapter, attachmentKey, data, formData, promise, root, serializer, url,
     _this = this;
     adapter = this.store.adapterFor(this.constructor.modelName);
     serializer = this.store.serializerFor(this._modelName());
@@ -53,7 +53,7 @@ export default Ember.Mixin.create({
       headers: adapter.get('headers'),
       processData: false,
       contentType: false,
-      xhr: function() {
+      xhr() {
         var xhr;
         xhr = Ember.$.ajaxSettings.xhr();
         xhr.upload.onprogress = function(evt) {
@@ -64,7 +64,7 @@ export default Ember.Mixin.create({
     });
     return this._commitWithAttachment(promise, adapter, serializer);
   },
-  _recursiveArrayAppend: function(formData, appendRoot, data, key) {
+  _recursiveArrayAppend(formData, appendRoot, data, key) {
     for (var qey = 0; qey < data[key].length; qey++) {
       if (!Ember.isNone(data[key][qey])) {
         if(Object.prototype.toString.call(data[key][qey]) === '[object Object]'){
@@ -77,7 +77,7 @@ export default Ember.Mixin.create({
       }
     }
   },
-  _recursiveObjectAppend: function(formData, appendRoot, data, key) {
+  _recursiveObjectAppend(formData, appendRoot, data, key) {
     for (var qey in data[key]){
       if (!Ember.isNone(data[key][qey])) {
         if(Object.prototype.toString.call(data[key][qey]) === '[object Object]'){
@@ -90,17 +90,17 @@ export default Ember.Mixin.create({
       }
     }
   },
-  _rootKey: function() {
+  _rootKey() {
     return Ember.String.underscore(Ember.String.decamelize(this._modelName()));
   },
-  _requestType: function() {
+  _requestType() {
     if (this.get("isNew")) {
       return "POST";
     } else {
       return "PUT";
     }
   },
-  _commitWithAttachment: function(promise, adapter, serializer) {
+  _commitWithAttachment(promise, adapter, serializer) {
     var operation, record, store, type, oldEmberData;
     oldEmberData = this._oldEmberData();
     store = this.store;
@@ -164,7 +164,7 @@ export default Ember.Mixin.create({
       throw reason;
     }), "Uploading file with attachment");
   },
-  _parseResponseHeaders: function (headerStr) {
+  _parseResponseHeaders(headerStr) {
     var headers = {};
     if (!headerStr) {
       return headers;
@@ -185,11 +185,11 @@ export default Ember.Mixin.create({
 
     return headers;
   },
-  _oldEmberData: function() {
+  _oldEmberData() {
     return !Ember.isNone(this.adapterWillCommit);
   },
   // Provide backwards compatible modelName implementation
-  _modelName: function() {
+  _modelName() {
     if (Ember.isNone(this.constructor.typeKey)) {
       return this.constructor.modelName;
     } else {
