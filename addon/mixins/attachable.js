@@ -40,7 +40,13 @@ export default Ember.Mixin.create({
       }
     });
 
-    url = adapter.buildURL(this._modelName(), this.get('id'));
+    if(this.get('isNew')){
+      url = adapter.buildURL(this._modelName(), this.get('id'), [], 'createRecord');
+    }
+    else{
+      url = adapter.buildURL(this._modelName(), this.get('id'), [], 'updateRecord');
+    }
+    
     if(this._oldEmberData()){
       this.adapterWillCommit();
     }else{
