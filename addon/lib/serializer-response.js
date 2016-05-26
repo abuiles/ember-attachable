@@ -86,8 +86,8 @@ export function normalizeResponseHelper(serializer, store, modelClass, payload, 
 
     return normalizedResponse;
   }else{
-    var serializerPayload = serializer.extract(store, modelClass, payload, id, requestType);
-    return _normalizeSerializerPayload(modelClass, serializerPayload);
+    var serializerPayload = serializer.normalizeResponse(store, modelClass, payload, id, requestType);
+    return _normalizeSerializerPayload(modelClass, serializerPayload.data);
   }
 }
 
