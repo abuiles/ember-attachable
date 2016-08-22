@@ -159,7 +159,7 @@ export default Ember.Mixin.create({
         } else {
           store.recordWasError(record);
         }
-      }else{
+      }else if(reason.jqXHR){
         error = adapter.handleResponse(reason.jqXHR.status, record._parseResponseHeaders(reason.jqXHR.getAllResponseHeaders()), adapter.parseErrorResponse(reason.jqXHR.responseText));
         if (error instanceof DS.InvalidError) {
           let stateToTransition = record.get('isNew') ? 'created.uncommitted' : 'updated.uncommitted';
