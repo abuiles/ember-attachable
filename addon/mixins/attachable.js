@@ -9,10 +9,10 @@ import {
 
 export default Ember.Mixin.create({
   attachmentAs: null,
-  saveWithAttachment() {
-    return this.createWithAttachment();
+  saveWithAttachment(jqXHRHeaders=null) {
+    return this.createWithAttachment(jqXHRHeaders);
   },
-  createWithAttachment() {
+  createWithAttachment(jqXHRHeaders) {
     let adapter, attachmentKey, data, formData, promise, root, serializer, url,
     _this = this;
     adapter = this.store.adapterFor(this.constructor.modelName);
@@ -53,6 +53,13 @@ export default Ember.Mixin.create({
       headers: adapter.get('headers'),
       processData: false,
       contentType: false,
+      beforeSend(jqXHR) {
+        if(jqXHRHeaders){
+          for(let [headerKey, headerValue] of Object.entries(jqXHRHeaders)) {
+            jqXHR.setRequestHeader(headerKey, headerValue);
+          }
+        }
+      },
       xhr() {
         var xhr;
         xhr = Ember.$.ajaxSettings.xhr();
@@ -94,10 +101,10 @@ export default Ember.Mixin.create({
     return Ember.String.underscore(Ember.String.decamelize(this._modelName()));
   },
   _requestType() {
-    if (this.get("isNew")) {
-      return "POST";
+    if (this.get('isNew')) {
+      return 'POST';
     } else {
-      return "PUT";
+      return 'PUT';
     }
   },
   _commitWithAttachment(promise, adapter, serializer) {
@@ -107,12 +114,12 @@ export default Ember.Mixin.create({
     record = this;
     type = record.constructor;
     operation = '';
-    if (Ember.get(record, "isNew")) {
-      operation = "createRecord";
-    } else if (Ember.get(record, "isDeleted")) {
-      operation = "deleteRecord";
+    if (Ember.get(record, 'isNew')) {
+      operation = 'createRecord';
+    } else if (Ember.get(record, 'isDeleted')) {
+      operation = 'deleteRecord';
     } else {
-      operation = "updateRecord";
+      operation = 'updateRecord';
     }
     return promise.then((function(adapterPayload) {
       if (oldEmberData) {
