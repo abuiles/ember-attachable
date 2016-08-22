@@ -14,7 +14,7 @@ In the root dir of your project run
 ```javascript
 "devDependencies": {
   ...
-  "ember-attachable": "1.5.0"
+  "ember-attachable": "1.7.0"
 }
 ```
 You may want to be more precise with your version locking.
@@ -55,6 +55,20 @@ userModel.saveWithAttachment()
 ```
 Attachment itself can be an instance of [`Blob`] (https://developer.mozilla.org/en-US/docs/Web/API/Blob)
 or of any other classes which are supported by `FormData` (see [`Working principle`](#working-principle) below)
+
+#### Custom jqXHR request headers
+
+There may be certain situations where you need to set custom headers for the request. You can pass an object to `saveWithAttachment`
+with these header.
+
+Example using Ember simple auth Authorizer
+```javascript
+this.get('session').authorize('authorizer:devise', (headerName, headerValue) => {
+	let authObject = {};
+	authObject[headerName] = headerValue;
+	userModel.saveWithAttachment(authObject);
+});
+```
 
 ## Component
 
