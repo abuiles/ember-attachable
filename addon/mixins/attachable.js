@@ -55,8 +55,8 @@ export default Ember.Mixin.create({
       contentType: false,
       beforeSend(jqXHR) {
         if(jqXHRHeaders){
-          for(let [headerKey, headerValue] of Object.entries(jqXHRHeaders)) {
-            jqXHR.setRequestHeader(headerKey, headerValue);
+          for (var headerKey in jqXHRHeaders) {
+            jqXHR.setRequestHeader(headerKey, jqXHRHeaders[headerKey]);
           }
         }
       },
